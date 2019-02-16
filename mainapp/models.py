@@ -7,7 +7,7 @@ class Family(models.Model):
 
 
 class User(AbstractUser):
-    usertype = models.CharField(max_length=5, choices=(('child','child'),('parent','parent')))
+    usertype = models.CharField(max_length=5, choices=(('child','Child'),('parent','Parent')))
     phone = models.CharField(max_length=10)
     gender = models.CharField(max_length=1, choices=(('M','Male'),('F','Female'),('O','Other')))
     def name(self): return self.first_name +" "+ self.last_name
@@ -16,5 +16,10 @@ class User(AbstractUser):
 
 class Transaction(models.Model):
     trans_id = models.CharField(max_length=20)
+    trans_type = models.CharField(max_length=1, choices=(('A','Add'),('P','Pay')))
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     amount = models.IntegerField()
+    method = models.CharField(max_length=5, choices=(('paytm','Paytm'),('gpay','Google Pay'),('phope','PhonePe'),('wapp','WhatsApp'),('fmpay','FamPay')))
+#   Better option: make a seperate model which will contain method types (eg. paytm/phonepe) and refer them in here(Transaction.method)
+#   rather than storing method in a charfield. as for every transaction it will take some bytes of space in db for storing repetative data.
+    def family(self): return self.user.family
