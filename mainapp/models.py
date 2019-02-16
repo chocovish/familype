@@ -4,12 +4,15 @@ from django.contrib.auth.models import AbstractUser
 class Family(models.Model):
     fam_name = models.CharField(max_length=30, default="My Family")
     balance = models.IntegerField(default=0)
+    def __str__(self): return self.fam_name +" | "+ str(self.balance)
 
 
 class User(AbstractUser):
-    usertype = models.CharField(max_length=5, choices=(('child','Child'),('parent','Parent')))
+# other attributes like email/first_name/last_name/date_registered already exists as we are extending the AbstructUser
+    usertype = models.CharField(max_length=6, choices=(('child','Child'),('parent','Parent')))
     phone = models.CharField(max_length=10)
     gender = models.CharField(max_length=1, choices=(('M','Male'),('F','Female'),('O','Other')))
+    birthday = models.DateField()
     def name(self): return self.first_name +" "+ self.last_name
     family = models.ForeignKey(Family,on_delete=models.DO_NOTHING, blank=True, null=True)
 
