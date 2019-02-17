@@ -18,3 +18,8 @@ class MemberDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['phone','name','usertype','gender','setup_completed']
+
+class FamilyDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Family
+        fields = ['name','balance']

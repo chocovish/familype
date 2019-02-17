@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import UserCreateSerializer,InviteMemberSerializer,MemberDetailSerializer
+from .serializers import UserCreateSerializer,InviteMemberSerializer,MemberDetailSerializer,FamilyDetailSerializer
 from .models import User
 from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView
 from rest_framework.views import APIView
@@ -23,7 +23,7 @@ class UserHasParent(APIView):
 
 class InviteMember(APIView):
     def post(self, request):
-        if not request.user.is_authenticated: return Response({'message':'You Must Login First'})
+        if not request.user.is_authenticated: return Response({'message':'You Must Login First'},status=401)
         phno = InviteMemberSerializer(request.data).data['phone']
         print(phno)
         u = User.objects.create(phone=phno,username=phno,setup_completed=False,family=request.user.family)
@@ -34,3 +34,9 @@ class FamilyMemberList(ListAPIView):
         if not self.request.user.is_authenticated: return {}
         return self.request.user.family.user_set.all()
     serializer_class = MemberDetailSerializer
+
+class FamilyDetail(APIView):
+    def get(self, request):
+        if not request.user.is_authenticated: return Response({'message':'You Must Login First'},status=401)
+        family = request.user.family
+        return Response(FamilyDetailSerializer(family).data)
